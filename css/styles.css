@@ -1,14 +1,13 @@
-body {
+.container {
 	
 }
 
-.container {
+.board {
 	width: 400px;
 	height: 400px;
-	padding: 0px 0px;
-	margin: 0px 0px;
-	width: 400px;
-	height: 400px;
+	padding: 0px;
+	margin: 0px;
+	background-color: #ABC;
 }
 
 .circle {
@@ -21,7 +20,8 @@ body {
 	border: solid 1px black;
 }
 .section {
-	margin: 0px;
+	margin: 0px 0px;
+	padding: 0px 0px;
 	width: 50%;
 	height: 50%;
 	z-index: 0;
@@ -58,38 +58,6 @@ body {
 	height: 100%;
 	color: white;
 	top: 0px;
-}
-
-#section-1{
-	background-color: red;
-	border-top-right-radius: 100%;
-}
-#section-1.selected{
-	background-color: darkred;
-}
-
-#section-3{
-	background-color: blue;
-	border-bottom-right-radius: 100%;
-}
-#section-3.selected{
-	background-color: darkblue;
-}
-
-#section-2{
-	background-color: yellow;
-	border-bottom-left-radius: 100%;
-}
-#section-2.selected{
-	background-color: goldenrod;
-}
-
-#section-0{
-	background-color: green;
-	border-top-left-radius: 100%;
-}
-#section-0.selected{
-	background-color: darkgreen;
 }
 
 .off{
