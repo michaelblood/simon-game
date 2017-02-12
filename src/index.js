@@ -1,11 +1,13 @@
 const COLORS = ['darkred', 'midnightblue', 'green', 'goldenrod'];
 const SELECTED_COLORS = ['red', 'mediumblue', 'lime', 'yellow'];
 
-const PRESS_LENGTH = 750;
+let PRESS_LENGTH;
 const PRESS_INTERVAL = 250;
 
 const Simon = {};
 let sections;
+let buttons = {};
+let first, second;
 
 const init = () => {
 	Simon.power = false;
@@ -16,7 +18,6 @@ const init = () => {
 	Simon.lock = false;
 	Simon.selected = -1;
 	Simon.timers = [];
-	Simon.display = null;
 };
 
 const reset = () => {
@@ -24,9 +25,9 @@ const reset = () => {
 	Simon.index = 0;
 	Simon.chain = [];
 	Simon.lock = true;
-	Simon.display = null;
 	Simon.timers = [];
 	Simon.selected = -1;
+	PRESS_LENGTH = 850;
 };
 
 const intro = () => {
@@ -35,10 +36,12 @@ const intro = () => {
 
 const generateMove = () => {
 	let move = Math.floor(Math.random() * 4);
-	let chain = Simon.chain.slice();
-	chain.push(move);
+	Simon.chain.push(move);
+	if (Simon.chain.length + 1 % 4 === 0 && PRESS_LENGTH > 400){
+		PRESS_LENGTH -= 150;
+	}
 
-	Simon.chain = chain;
+	updateDisplay();
 	Simon.index = 0;
 	displayChain();
 };
@@ -48,6 +51,21 @@ const displayChain = () => {
 	let timer = setTimeout(boop, 1000);
 	timers.push(timer);
 	Simon.currentBoops = timers;
+};
+
+const updateDisplay = () => {
+	if (!Simon.power) {
+		first.innerText = '';
+		second.innerText = '';
+		return;
+	}
+	
+	let msg = String(Simon.chain.length);
+	if (msg.length < 2) {
+		msg = '0' + msg;
+	}
+	first.innerText = msg[0];
+	second.innerText = msg[1];
 };
 
 const boop = (id = 0) => {
@@ -78,6 +96,12 @@ const cancelBoops = () => {
 	boops = [];
 	Simon.stopErrTone();
 	Simon.stopGoodTone();
+	resetDisplay();
+};
+
+const resetDisplay = () => {
+	first.innerText = '';
+	second.innerText = '';
 };
 
 const togglePlay = () => {
@@ -85,24 +109,47 @@ const togglePlay = () => {
 	Simon.play = !Simon.play;
 	if (Simon.play){
 		intro();
+		buttons['play'].classList.add('on');
+		buttons['play'].classList.remove('off');
+		updateDisplay();
 		return;
 	}
+
 	cancelBoops();
 	reset();
+	resetDisplay();
+	intro();
 };
 
 const toggleStrict = () => {
-	Simon.strict = !Simon.strict;
+	if (Simon.power){
+		Simon.strict = !Simon.strict;
+		if (Simon.strict) {
+			buttons['strict'].classList.add('on');
+			buttons['strict'].classList.remove('off');
+			return;
+		}
+		buttons['strict'].classList.add('off');
+		buttons['strict'].classList.remove('on');
+	}
 };
 
 const togglePower = () => {
 	Simon.power = !Simon.power;
 	if (Simon.power){
 		reset();
+		buttons['power'].classList.add('on');
+		buttons['power'].classList.remove('off');
+		first.innerText = '-';
+		second.innerText = '-';
 		return;
 	}
+	for (let prop in buttons){
+			buttons[prop].classList.remove('on');
+			buttons[prop].classList.add('off');
+		}
 	cancelBoops();
-	Simon.display = null;
+	resetDisplay();
 }
 
 const checkSelection = () => {
@@ -142,9 +189,14 @@ const checkSelection = () => {
 };
 
 const notifyWrong = (id) => {
+	first.innerText = '!';
+	second.innerText = '!';
 	Simon.stopGoodTone();
 	Simon.playErrTone();
-	setTimeout(Simon.stopErrTone, 1500);
+	setTimeout(() => {
+		Simon.stopErrTone();
+		updateDisplay();
+	}, 2000);
 };
 
 const initializeAudio = (audioContext) => {
@@ -231,9 +283,9 @@ const ready = () => {
 
 	init();
 
-	let playBtn = document.getElementById('play-btn');
-	let strictBtn = document.getElementById('strict-btn');
-	let powerBtn = document.getElementById('power-btn');
+	buttons['play'] = document.getElementById('play-btn');
+	buttons['strict'] = document.getElementById('strict-btn');
+	buttons['power'] = document.getElementById('power-btn');
 	
 	sections = {
 		'0': document.getElementById('section-0'),
@@ -251,10 +303,12 @@ const ready = () => {
 		sections[i].addEventListener('touchstart', fn);
 	}
 
-	playBtn.addEventListener('click', togglePlay);
-	strictBtn.addEventListener('click', toggleStrict);
-	powerBtn.addEventListener('click', togglePower);
+	buttons['play'].addEventListener('click', togglePlay);
+	buttons['strict'].addEventListener('click', toggleStrict);
+	buttons['power'].addEventListener('click', togglePower);
 
+	first = document.getElementById('first');
+	second = document.getElementById('second');
 };
 
 

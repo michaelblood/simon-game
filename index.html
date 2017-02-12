@@ -5,11 +5,12 @@
 	<meta charset="utf-8">
 	<title>Simon Game</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet"> 
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 
 <body>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 <div class="container" id="game">
 	<div class="board">
 		<div class="circle">
@@ -19,19 +20,29 @@
 			<div class="section" id="section-2"></div>
 		</div>
 		<div class="middle">
-			<div class="btn-group">
-				<button id="power-btn" class="off">Power</button>
-				<button id="play-btn" class="off">Play</button>
-				<button id="strict-btn" class="off">Strict</button>
+			<div class="power-house">
+				<button id="power-btn" class="pwr off">Power</button>
 			</div>
 			<div class="lcd">
-				<span class="digit"></span>
-				<span class="digit"></span>
+				<span id="first" class="digit"></span>
+				<span id="second" class="digit"></span>
+			</div>
+			<div class="title">
+				<p>Simon</p>
+			</div>
+			<div class="btn-group">
+				<div class="play-house">
+					<label for="play-btn">Play</label>
+					<button id="play-btn" class="btn off"></button>
+				</div>
+				<div class="strict-house">
+					<button id="strict-btn" class="btn off"></button>
+					<label for="strict-btn">Strict</label>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
 <script src="src/index.js"></script>
 </body>
 </html>
